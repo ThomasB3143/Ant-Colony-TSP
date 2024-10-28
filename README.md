@@ -1,1 +1,1 @@
-# Simultaneous-Solver-
+# Cool python project
