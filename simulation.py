@@ -6,7 +6,7 @@ dpe = 1.5 # constant - distance priority exponent
 def setup(nodeList): # sets up initial matrices and carries out antRun() repeatedly
     # create pheromone and distance matrices
     global pheromoneMap
-    pheromoneMap = [[1 for i in range(len(nodeList))] for j in range(len(nodeList))]
+    pheromoneMap = [[1 for i in range(len(nodeList))] for j in range(len(nodeList))] #all points start with pheromones of 1
     global distanceMap
     distanceMap = [[0 for i in range(len(nodeList))] for j in range(len(nodeList))]
     # populate distanceMap
@@ -41,7 +41,10 @@ def antRun():
     print(visited)
     print(totalDistance)
     # path is now made, write the pheromone secretion code here
-    sprayPheromones(visited, totalDistance)
+    updatePheromones(visited, totalDistance)
+    for i in range(len(pheromoneMap)):
+        print(pheromoneMap[i])
+
 
 
 def desireBetween(node1,node2): # inputs are the indexes of the nodes within the two matrices
@@ -49,9 +52,11 @@ def desireBetween(node1,node2): # inputs are the indexes of the nodes within the
     d = distanceMap[node1][node2]
     return p/d
 def updatePheromones(visited, totalDistance): # adds pheromones from the current ant and dissipates all pheromones by a factor
-    pheromoneToAdd = constAPC/totalDistance
-    for i in range(len(visited)+1):
-        pheromoneMap[]
+    pheromoneToAdd = 5
+    for i in range(len(visited)):
+        pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] += pheromoneToAdd
+        pheromoneMap[visited[(i+1)%len(visited)]][visited[i]] += pheromoneToAdd
+
 node0 = Node(x=10,y=10)
 node1 = Node(x=20,y=20)
 node2 = Node(x=40,y=20)
