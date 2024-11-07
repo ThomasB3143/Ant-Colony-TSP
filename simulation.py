@@ -1,6 +1,7 @@
 from node import *
+import matplotlib.pyplot as plt
 APC = 20 # constant - added pheromones coefficient
-PDC = 0.9 # constant - pheromone decay constant
+PDC = 0.8 # constant - pheromone decay constant
 PPE = 0.9 # constant - pheromone priority exponent
 DPE = -1.5 # constant - distance priority exponent
 bestPath = []
@@ -17,8 +18,6 @@ def setup(nodeList): # sets up initial matrices and carries out antRun() repeate
             distanceMap[j][i] = nodeList[i].distanceFrom(nodeList[j])
             distanceMap[i][j] = nodeList[i].distanceFrom(nodeList[j])
     #print matrix
-    for i in range(len(nodeList)):
-        print(distanceMap[i])
 
 def antRun():
     global bestPath
@@ -40,8 +39,6 @@ def antRun():
         bestPath = visited
         bestDistance = totalDistance
     updatePheromones(visited, totalDistance)
-    for i in range(len(pheromoneMap)):
-        print(numpy.round(pheromoneMap[i],4))
 
 def desireBetween(node1,node2): # inputs are the indexes of the nodes within the two matrices
     p = pheromoneMap[node1][node2]
@@ -75,7 +72,10 @@ node8 = Node(x=72,y=298)
 node9 = Node(x=799,y=527)
 setup([node0,node1,node2,node3,node4,node5,node6,node7,node8,node9])
 # optimal path is 0 4 3 9 7 1 5 2 8 6
-# ants are going like 
-for i in range(400):
+for i in range(1000):
     antRun()
+for i in range(len(pheromoneMap)):
+        print(numpy.round(pheromoneMap[i],4))
 print(bestPath)
+plt.plot([1,2,3],[4,5,6])
+plt.show()
