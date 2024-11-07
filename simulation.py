@@ -1,7 +1,7 @@
 from node import *
 import matplotlib.pyplot as plt
 APC = 20 # constant - added pheromones coefficient
-PDC = 0.8 # constant - pheromone decay constant
+PDC = 0.9 # constant - pheromone decay constant
 PPE = 0.9 # constant - pheromone priority exponent
 DPE = -1.5 # constant - distance priority exponent
 bestPath = []
@@ -17,7 +17,6 @@ def setup(nodeList): # sets up initial matrices and carries out antRun() repeate
         for j in range(0,i):
             distanceMap[j][i] = nodeList[i].distanceFrom(nodeList[j])
             distanceMap[i][j] = nodeList[i].distanceFrom(nodeList[j])
-    #print matrix
 
 def antRun():
     global bestPath
@@ -30,11 +29,12 @@ def antRun():
         desireList = []
         for n in unvisited: # calculates desire for each unvisited node
             desireList.append(desireBetween(currentNode,n))
-        chosenNode = choosePath(unvisited,desireList) # REPLACE WITH PROBABILITY FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        chosenNode = choosePath(unvisited,desireList) # awesome probability function
         totalDistance += distanceMap[currentNode][chosenNode] # adds distance onto total for later pheromone addition
         currentNode = chosenNode # changes current node to desired node
         visited.append(chosenNode) # adds new node to visited
         unvisited.remove(chosenNode) # removes new node from unvisited
+    totalDistance += distanceMap[visited[0]][visited[len(visited)-1]]
     if bestDistance == -1 or totalDistance < bestDistance:
         bestPath = visited
         bestDistance = totalDistance
@@ -70,12 +70,15 @@ node6 = Node(x=281,y=207)
 node7 = Node(x=996,y=401)
 node8 = Node(x=72,y=298)
 node9 = Node(x=799,y=527)
-setup([node0,node1,node2,node3,node4,node5,node6,node7,node8,node9])
+nodelist = [node0,node1,node2,node3,node4,node5,node6,node7,node8,node9]
+setup(nodelist)
 # optimal path is 0 4 3 9 7 1 5 2 8 6
 for i in range(1000):
     antRun()
 for i in range(len(pheromoneMap)):
         print(numpy.round(pheromoneMap[i],4))
 print(bestPath)
-plt.plot([1,2,3],[4,5,6])
+print(bestDistance)
+for n in nodelist:
+    plt.plot(n.x,n.y,"o")
 plt.show()
