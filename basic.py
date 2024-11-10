@@ -1,6 +1,6 @@
 from node import *
 import matplotlib.pyplot as plt
-APC = 20 # constant - added pheromones coefficient
+APC = 25 # constant - added pheromones coefficient
 PDC = 0.9 # constant - pheromone decay constant
 PPE = 0.9 # constant - pheromone priority exponent
 DPE = -1.5 # constant - distance priority exponent
@@ -60,7 +60,7 @@ def updatePheromones(visited, totalDistance): # adds pheromones from the current
         pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] += pheromoneToAdd
         pheromoneMap[visited[(i+1)%len(visited)]][visited[i]] += pheromoneToAdd
 
-node0 = Node(x=578,y=524)
+'''node0 = Node(x=578,y=524)
 node1 = Node(x=682,y=78)
 node2 = Node(x=33,y=27)
 node3 = Node(x=724,y=777)
@@ -69,16 +69,28 @@ node5 = Node(x=513,y=169)
 node6 = Node(x=281,y=207)
 node7 = Node(x=996,y=401)
 node8 = Node(x=72,y=298)
-node9 = Node(x=799,y=527)
-nodelist = [node0,node1,node2,node3,node4,node5,node6,node7,node8,node9]
+node9 = Node(x=799,y=527)'''
+#nodelist = [node0,node1,node2,node3,node4,node5,node6,node7,node8,node9]
+nodelist = []
+for i in range(70):
+    nodelist.append(Node(numpy.random.randint(0,800),numpy.random.randint(0,800)))
 setup(nodelist)
 # optimal path is 0 4 3 9 7 1 5 2 8 6
+
 for i in range(1000):
     antRun()
 for i in range(len(pheromoneMap)):
         print(numpy.round(pheromoneMap[i],4))
 print(bestPath)
 print(bestDistance)
-for n in nodelist:
-    plt.plot(n.x,n.y,"o")
+
+for i in range(0,len(bestPath)):
+    plt.plot([nodelist[bestPath[i]].x,nodelist[bestPath[(i+1)%len(bestPath)]].x],[nodelist[bestPath[i]].y,nodelist[bestPath[(i+1)%len(bestPath)]].y],color=(1,0,0))
+
+for i in range(0,len(nodelist)):
+    plt.plot(nodelist[i].x,nodelist[i].y,"o")
+    '''for j in range(i+1,len(nodelist)):
+        strength = pheromoneMap[i][j]
+        if strength > 0.001:
+            plt.plot([nodelist[i].x,nodelist[j].x],[nodelist[i].y,nodelist[j].y],color=(1,0,0,strength))'''
 plt.show()
