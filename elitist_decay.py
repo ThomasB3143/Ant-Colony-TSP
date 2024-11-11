@@ -2,6 +2,7 @@ from node import *
 import matplotlib.pyplot as plt
 APC = 25 # constant - added pheromones coefficient
 PDC = 0.9 # constant - pheromone decay constant
+PFC = 0.9 # constant - pheromone fall-off coefficient (the factor change for pheromones added to the strongest trail ) 
 PPE = 0.9 # constant - pheromone priority exponent
 DPE = -1.5 # constant - distance priority exponent
 APB = 20 # ants per batch
@@ -64,11 +65,12 @@ def updatePheromones(visited, totalDistance, best): # adds pheromones from the c
         for j in range(len(pheromoneMap)):
             pheromoneMap[i][j] *= (PDC)
     pheromoneToAdd = APC/totalDistance
+    maxStrength = numpy.amax(pheromoneMap)
     if best:
         pheromoneToAdd *= 2
     for i in range(len(visited)): # adding pheromones from the ant
-        pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] += pheromoneToAdd
-        pheromoneMap[visited[(i+1)%len(visited)]][visited[i]] += pheromoneToAdd
+        pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] += pheromoneToAdd * PFC**(pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] / maxStrength)
+        pheromoneMap[visited[(i+1)%len(visited)]][visited[i]] += pheromoneToAdd * PFC**(pheromoneMap[(i+1)%len(visited)][visited[i]] / maxStrength)
 
 '''node0 = Node(x=578,y=524)
 node1 = Node(x=682,y=78)
