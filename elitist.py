@@ -2,11 +2,12 @@ from node import *
 import matplotlib.pyplot as plt
 APC = 25 # constant - added pheromones coefficient
 PDC = 0.9 # constant - pheromone decay constant
-PFC = 0.9 # constant - pheromone fall-off coefficient (the factor change for pheromones added to the strongest trail ) 
 PPE = 0.9 # constant - pheromone priority exponent
 DPE = -1.5 # constant - distance priority exponent
+APB = 50 # ants per batch
 bestPath = []
 bestDistance = -1
+batchBest = APB
 def setup(nodeList): # sets up initial matrices and carries out antRun() repeatedly
     # create pheromone and distance matrices
     global pheromoneMap
@@ -18,8 +19,7 @@ def setup(nodeList): # sets up initial matrices and carries out antRun() repeate
         for j in range(0,i):
             distanceMap[j][i] = nodeList[i].distanceFrom(nodeList[j])
             distanceMap[i][j] = nodeList[i].distanceFrom(nodeList[j])
-
-def antRun():
+def antRun(n): # this is now recursive, n is the ID of the ant in the batch and the number of ants left to do
     global bestPath
     global bestDistance
     unvisited = list(range(1,len(distanceMap[0]))) # list of all univisited nodes (0 already removed)
@@ -52,15 +52,16 @@ def choosePath(choices,desires): # discrete probability function
         desires[i] /= scaleFactor
     return numpy.random.choice(a=choices,p=desires)
 
-def updatePheromones(visited, totalDistance): # adds pheromones from the current ant and dissipates all pheromones by a factor
+def updatePheromones(visited, totalDistance, best): # adds pheromones from the current ant and dissipates all pheromones by a factor
     for i in range(len(pheromoneMap)):
         for j in range(len(pheromoneMap)):
             pheromoneMap[i][j] *= (PDC)
     pheromoneToAdd = APC/totalDistance
-    maxStrength = numpy.amax(pheromoneMap)
+    if best:
+        pheromoneToAdd *= 2
     for i in range(len(visited)): # adding pheromones from the ant
-        pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] += pheromoneToAdd * PFC**(pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] / maxStrength)
-        pheromoneMap[visited[(i+1)%len(visited)]][visited[i]] += pheromoneToAdd * PFC**(pheromoneMap[visited[(i+1)%len(visited)]][visited[i]] / maxStrength)
+        pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] += pheromoneToAdd
+        pheromoneMap[visited[(i+1)%len(visited)]][visited[i]] += pheromoneToAdd
 
 '''node0 = Node(x=578,y=524)
 node1 = Node(x=682,y=78)
@@ -74,13 +75,13 @@ node8 = Node(x=72,y=298)
 node9 = Node(x=799,y=527)'''
 #nodelist = [node0,node1,node2,node3,node4,node5,node6,node7,node8,node9]
 nodelist = []
-for i in range(40):
+for i in range(70):
     nodelist.append(Node(numpy.random.randint(0,800),numpy.random.randint(0,800)))
 setup(nodelist)
 # optimal path is 0 4 3 9 7 1 5 2 8 6
 
-for i in range(1000):
-    antRun()
+for i in range(1000/APB):
+    antRun(APB)
 for i in range(len(pheromoneMap)):
         print(numpy.round(pheromoneMap[i],4))
 print(bestPath)
@@ -90,7 +91,7 @@ for i in range(0,len(bestPath)):
     plt.plot([nodelist[bestPath[i]].x,nodelist[bestPath[(i+1)%len(bestPath)]].x],[nodelist[bestPath[i]].y,nodelist[bestPath[(i+1)%len(bestPath)]].y],color=(1,0,0))
 
 for i in range(0,len(nodelist)):
-    plt.plot(nodelist[i].x,nodelist[i].y,"o",color=(0,0,0))
+    plt.plot(nodelist[i].x,nodelist[i].y,"o")
     '''for j in range(i+1,len(nodelist)):
         strength = pheromoneMap[i][j]
         if strength > 0.001:
