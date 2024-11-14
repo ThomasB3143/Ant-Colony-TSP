@@ -111,18 +111,3 @@ def updatePheromones(visited, totalDistance, best): # adds pheromones from the c
     for i in range(len(visited)): # adding pheromones from the ant
         pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] += pheromoneToAdd * PFC**(pheromoneMap[visited[i]][visited[(i+1)%len(visited)]] / maxStrength)
         pheromoneMap[visited[(i+1)%len(visited)]][visited[i]] += pheromoneToAdd * PFC**(pheromoneMap[(i+1)%len(visited)][visited[i]] / maxStrength)
-
-
-nodelist = []
-for i in range(60):
-    nodelist.append(Node(numpy.random.randint(0,800),numpy.random.randint(0,800)))
-setup(nodelist)
-fullRun()
-setup(nodelist)
-fullRun()
-for i in range(0,len(bestPath)):
-    plt.plot([nodelist[bestPath[i]].x,nodelist[bestPath[(i+1)%len(bestPath)]].x],[nodelist[bestPath[i]].y,nodelist[bestPath[(i+1)%len(bestPath)]].y],color=(1,0,0))
-
-for i in range(0,len(nodelist)):
-    plt.plot(nodelist[i].x,nodelist[i].y,"o")
-plt.show()
