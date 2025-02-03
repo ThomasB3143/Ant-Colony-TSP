@@ -51,6 +51,7 @@ def fullRun():
     print("Total times a better path was found is: ",newBestCount)
     print("Best distance - initial distance = ", bestDistance, " - ", initialDistance, " = ", bestDistance-initialDistance)
     print("")
+    return bestPath
 def antRun(n): # this is now recursive, n is the ID of the ant in the batch and the number of ants left to do
     global bestPath
     global bestDistance
